@@ -4,6 +4,7 @@ require 'date'
 require 'json'
 require 'net/http'
 require 'nokogiri'
+require 'sinatra'
 require 'uri'
 
 URL = 'https://invoices.rae.gr/oikiako/'.freeze
@@ -46,4 +47,18 @@ rows = doc.css('#billing_table tbody tr').reduce([]) do |result, tr|
   }
 end
 
-print rows.to_json
+get '/' do
+  content_type :json
+
+  filtered_params = params.slice(*rows[0].keys)
+
+  rows.select do |row|
+    select = true
+
+    filtered_params.each do |name, value|
+      select &= row[name].to_s.include?(value)
+    end
+
+    select
+  end.to_json
+end
