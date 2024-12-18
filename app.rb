@@ -104,7 +104,11 @@ get '/' do
         raise 'Failed to fetch rows'
       end
     rescue
-      halt 504, 'Bad Gateway'
+      if production?
+        halt 504, 'Bad Gateway'
+      else
+        raise # Re-raise
+      end
     end
 
     File.open(settings.cache_path, 'w') do |f|
