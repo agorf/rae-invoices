@@ -60,6 +60,14 @@ helpers do
         'Διάρκεια Σύμβασης' => tds[10].text.strip,
         'Παρατηρήσεις' => tds[11].text.strip
       }
+    end.sort_by do |entry|
+      [
+        entry.fetch('Πάροχος'),
+        -entry.fetch('Έτος'), # Desc
+        -entry.fetch('Μήνας'), # Desc
+        entry.fetch('Τύπος Τιμολογίου'),
+        entry.fetch('Τελική Τιμή Προμήθειας με Έκπτωση με προϋπόθεση (€/MWh)')
+      ]
     end
   end
 
