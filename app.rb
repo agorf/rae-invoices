@@ -7,7 +7,7 @@ require 'nokogiri'
 require 'sinatra'
 require 'uri'
 
-URL = 'https://invoices.rae.gr/oikiako/'.freeze
+URL = 'https://invoices.rae.gr/%ce%ba%ce%b1%cf%84%ce%b1%cf%87%cf%89%cf%81%ce%b7%ce%bc%ce%ad%ce%bd%ce%b1-%cf%84%ce%b9%ce%bc%ce%bf%ce%bb%cf%8c%ce%b3%ce%b9%ce%b1-%cf%80%cf%81%ce%bf%ce%bc%ce%ae%ce%b8%ce%b5%ce%b9%ce%b1%cf%82-%ce%b7-3/'.freeze
 
 COLORS = {
   'blue' => 'μπλε',
