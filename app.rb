@@ -28,7 +28,7 @@ end
 
 helpers do
   def mwh_to_kwh(mwh)
-    (mwh / 1_000).round(5)
+    (mwh / 1_000).round(8)
   end
 
   def fetch_invoice_html
