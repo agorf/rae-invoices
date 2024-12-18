@@ -27,6 +27,10 @@ configure :production do
 end
 
 helpers do
+  def production?
+    settings.environment == :production
+  end
+
   def mwh_to_kwh(mwh)
     (mwh / 1_000).round(8)
   end
@@ -87,7 +91,12 @@ end
 get '/' do
   rows = nil
 
-  if !File.exist?(settings.cache_path) || File.mtime(settings.cache_path) < Time.now - 24 * 60 * 60
+  bust_cache =
+    !production? ||
+      !File.exist?(settings.cache_path) ||
+      File.mtime(settings.cache_path) < Time.now - 24 * 60 * 60
+
+  if bust_cache
     begin
       rows = generate_invoice_rows(fetch_invoice_html)
 
