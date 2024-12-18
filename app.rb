@@ -105,6 +105,7 @@ get '/' do
       end
     rescue
       if production?
+        content_type :text, charset: 'utf-8'
         halt 504, 'Bad Gateway'
       else
         raise # Re-raise
