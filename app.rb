@@ -31,10 +31,6 @@ helpers do
     settings.environment == :production
   end
 
-  def mwh_to_kwh(mwh)
-    (mwh / 1_000).round(8)
-  end
-
   def fetch_invoice_html
     uri = URI.parse(URL)
     http = Net::HTTP.new(uri.host, uri.port)
@@ -58,8 +54,7 @@ helpers do
         'Χρώμα Τιμολογίου' => COLORS.fetch(tds[3]['class'].split(/\s+/).find { |c| c.start_with?('color_') }.delete_prefix('color_')),
         'Πάγιο με Έκπτωση με προϋπόθεση (€/μήνα)' => tds[6].text.to_f,
         'Προϋπόθεση Έκπτωσης Παγίου' => tds[7].text.strip,
-        'Τελική Τιμή Προμήθειας με Έκπτωση με προϋπόθεση (€/kWh)' => mwh_to_kwh(tds[8].text.strip.to_f),
-        'Τελική Τιμή Προμήθειας με Έκπτωση με προϋπόθεση (€/MWh)' => tds[8].text.strip.to_f,
+        'Τελική Τιμή Προμήθειας με Έκπτωση με προϋπόθεση (€/kWh)' => tds[8].text.strip,
         'Προϋπόθεση Έκπτωσης Βασικής Τιμής Προμήθειας' => tds[9].text.strip,
         'Διάρκεια Σύμβασης' => tds[10].text.strip,
         'Παρατηρήσεις' => tds[11].text.strip
@@ -70,7 +65,7 @@ helpers do
         -entry.fetch('Έτος'), # Desc
         -entry.fetch('Μήνας'), # Desc
         entry.fetch('Τύπος Τιμολογίου'),
-        entry.fetch('Τελική Τιμή Προμήθειας με Έκπτωση με προϋπόθεση (€/MWh)')
+        entry.fetch('Τελική Τιμή Προμήθειας με Έκπτωση με προϋπόθεση (€/kWh)')
       ]
     end
   end
