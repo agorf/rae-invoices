@@ -45,6 +45,13 @@ helpers do
     Nokogiri(html).css('#billing_table tbody tr').reduce([]) do |result, tr|
       tds = tr.css('td')
 
+      data =
+        tr.attributes.each_with_object({}) do |(name, attr), result|
+          next unless name.start_with?('data-')
+
+          result[name.delete_prefix('data-')] = attr.value
+        end
+
       result << {
         'Πάροχος' => tds[0].text.strip,
         'Έτος' => tds[1].text.to_i,
@@ -58,7 +65,7 @@ helpers do
         'Προϋπόθεση Έκπτωσης Βασικής Τιμής Προμήθειας' => tds[9].text.strip,
         'Διάρκεια Σύμβασης' => tds[10].text.strip,
         'Παρατηρήσεις' => tds[11].text.strip
-      }
+      }.merge(data)
     end.sort_by do |entry|
       [
         entry.fetch('Πάροχος'),
