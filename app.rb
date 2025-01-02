@@ -15,13 +15,15 @@ COLORS = {
   'yellow' => 'κίτρινο'
 }.freeze
 
+CACHE_BASENAME = 'cache-%Y-%m-%d.json'.freeze
+
 configure :development do
-  set :cache_path, File.join('cache.json')
+  set :cache_path_format, CACHE_BASENAME
   set :logging, Logger::DEBUG
 end
 
 configure :production do
-  set :cache_path, File.join('', 'data', 'cache.json')
+  set :cache_path_format, File.join('', 'data', CACHE_BASENAME)
   set :host_authorization, { permitted_hosts: ['.fly.dev'] }
   set :protection, except: [:json_csrf]
 end
@@ -93,10 +95,8 @@ end
 get '/' do
   rows = nil
 
-  bust_cache =
-    !production? ||
-      !File.exist?(settings.cache_path) ||
-      File.mtime(settings.cache_path) < Time.now - 24 * 60 * 60
+  cache_path = Time.now.strftime(settings.cache_path_format)
+  bust_cache = !production? || !File.exist?(cache_path)
 
   if bust_cache
     begin
@@ -114,14 +114,14 @@ get '/' do
       end
     end
 
-    File.open(settings.cache_path, 'w') do |f|
+    File.open(cache_path, 'w') do |f|
       f << rows.to_json
     end
   end
 
   content_type :json, charset: 'utf-8'
 
-  rows ||= JSON.load(File.open(settings.cache_path))
+  rows ||= JSON.load(File.open(cache_path))
   safe_params = params.slice(*rows.fetch(0).keys)
 
   filter_rows(rows, safe_params).to_json
