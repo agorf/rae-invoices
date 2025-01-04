@@ -1,6 +1,6 @@
 # rae-invoices
 
-A [Ruby][] program that serves a JSON API of electricity prices (€/kWh) in Greece scraped from the official regulatory authority at <https://invoices.rae.gr/oikiako/>
+A [Ruby][] program that serves a JSON API of electricity prices (€/kWh) in Greece scraped from the [official regulatory authority](https://www.raaey.gr/energeia/)
 
 It can be useful for [Home Assistant][ha] setups to calculate the cost of energy consumption.
 
