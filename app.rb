@@ -105,7 +105,7 @@ get '/' do
       if !rows.is_a?(Array) || rows.empty?
         raise 'Failed to fetch rows'
       end
-    rescue
+    rescue StandardError
       if production?
         content_type :text, charset: 'utf-8'
         halt 504, 'Bad Gateway'
@@ -121,7 +121,7 @@ get '/' do
 
   content_type :json, charset: 'utf-8'
 
-  rows ||= JSON.load(File.open(cache_path))
+  rows ||= JSON.parse(File.read(cache_path))
   safe_params = params.slice(*rows.fetch(0).keys)
 
   filter_rows(rows, safe_params).to_json
